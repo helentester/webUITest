@@ -1,0 +1,139 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.wufu</groupId>
+	<artifactId>webUITest</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<description>UITest</description>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<!--加入对excel的读写支持 -->
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.17</version>
+		</dependency>
+		<!-- 加入mysql支持 -->
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>6.0.6</version>
+		</dependency>
+		<!-- 加入json数据支持 -->
+		<!-- https://mvnrepository.com/artifact/net.sf.json-lib/json-lib -->
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<!-- 加入selenium,支持UI界面测试 -->
+		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<!-- 加入testng测试框架 -->
+		<!-- https://mvnrepository.com/artifact/org.testng/testng -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.14.3</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- 加入reportNG依赖，代替testNG测试报告。这个reportng已经过本人的修改，报告中会输出@Test的description属性 -->
+		<dependency>
+			<groupId>org.uncommons</groupId>
+			<artifactId>reportng</artifactId>
+			<version>1.1.6</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/reportng-1.1.6.jar</systemPath>
+			<exclusions>
+				<exclusion>
+					<groupId>org.testng</groupId>
+					<artifactId>testng</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- 因为依赖的是本地自己打包的reportng所以还要把它的依赖包velocity引入 -->
+		<dependency>
+			<groupId>velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<!-- 依赖guice -->
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<!-- 添加redis的驱动包，增加对redis的支持 -->
+		<!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+		<!--maven私库中的jar包 <dependency> <groupId>com.wufumall</groupId> <artifactId>wufumall-support-redis</artifactId> 
+			<version>1.7.0-SNAPSHOT</version> </dependency> -->
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- 指定JDK路径，${JAVA8_HOME}这个变量是在settings.xml中配置，解决问题：[ERROR] Failed to 
+				execute goal org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (default-compile) 
+				on project wufu: Fatal error compiling: 无效的目标发行版: 10.0.1 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<verbose>true</verbose>
+					<fork>true</fork>
+					<executable>${JAVA10_HOME}/bin/javac</executable>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- 指定SuiteXML文件 -->
+					<suiteXmlFiles>
+						<suiteXmlFile>src/test/resources/testngXML/mainUITest.xml</suiteXmlFile>
+					</suiteXmlFiles>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<forkMode>always</forkMode>
+					<!-- 配置输出 -->
+					<properties>
+						<property>
+							<name>usedefaultlisteners</name>
+							<value>false</value>
+						</property>
+						<property>
+							<name>listener</name>
+							<value>org.uncommons.reportng.HTMLReporter</value>
+						</property>
+					</properties>
+					<workingDirectory>target/test-classes</workingDirectory>
+					<!--testFailureIgnore:忽略测试失败.Maven在测试阶段出现失败的用例时，默认的行为是停止当前构建，构建过程也会以失败结束。有时候（如测试驱动开发模式）即使测试出现失败用例，仍然希望能继续构建项目
+					,未设置时抛出异常：[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.12.4:test 
+						(default-test) on project wufu: There are test failures. -->
+					<testFailureIgnore>true</testFailureIgnore>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- 加入本地私库 <distributionManagement> <repository> <id>Releases</id> <name>Releases</name> 
+		<url>http://192.168.1.235:8081/nexus/content/repositories/releases/</url> 
+		</repository> <snapshotRepository> <id>Snapshots</id> <name>Snapshots</name> 
+		<url>http://192.168.1.235:8081/nexus/content/repositories/snapshots/</url> 
+		</snapshotRepository> </distributionManagement> -->
+</project>

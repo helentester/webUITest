@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="界面测试">
+  	<test name="运营中心－菜单检查">
+		<classes>
+			<class name="wufu.wufu.SysIndexUITest"></class>
+		</classes>
+	</test>
+ 	<test name="运营中心功能测试">
+		<classes>
+			<class name="wufu.wufu.SysPersonalAgentTest"></class>
+			<class name="wufu.wufu.SysSellerTest"></class>
+			<class name="wufu.wufu.SysSuperAgentTest"></class>
+			<class name="wufu.wufu.SysGoodsTest"></class>
+		</classes>
+	</test>
+	<test name="代理商管理系统">
+		<classes>
+			<class name="wufu.wufu.AgentRegistTest"></class>
+			<class name="wufu.wufu.AgentForgetPasswordTest"></class>
+			<class name="wufu.wufu.AgentOrderTest"></class>
+		</classes>
+	</test>
+	<test name="商家管理系统">
+		<classes>
+			<class name="wufu.wufu.SellerRegistTest"></class>
+			<class name="wufu.wufu.SellerForgetPasswordTest"></class>
+			<class name="wufu.wufu.SellerGoodsTest"></class>
+		</classes>
+	</test>
+	<test name="PC商城业务测试">
+		<classes>
+			<class name="wufu.wufu.PC_orderTest"></class>
+			<class name="wufu.wufu.PC_registTest"></class>
+			<class name="wufu.wufu.PC_myOrderTest"></class>
+		</classes>
+	</test>
+	<test name="会员体系测试">
+		<classes>
+			<class name="wufu.wufu.MemberSystemTest"></class>
+		</classes>
+	</test>  
+	<test name="福豆优惠券分摊测试">
+		<classes>
+			<class name="wufu.wufu.PC_couponAndBeanInOrderTest"></class>
+		</classes>
+	</test>
+ 	<test name="分润业务测试">
+		<classes>
+			<class name="wufu.wufu.ProfitTest"></class>
+		</classes>
+	</test> 
+
+
+</suite>
